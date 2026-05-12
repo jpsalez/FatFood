@@ -1,0 +1,21 @@
+using Lanchonete.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Lanchonete.Mappings;
+
+public class RoleMap : IEntityTypeConfiguration<Role>
+{
+    public void Configure(EntityTypeBuilder<Role> builder)
+    {
+        builder.ToTable("Roles");
+        
+        
+        builder.HasKey(x => x.Id);
+        
+        builder.Property(x => x.Id).HasColumnName("Id").IsRequired().HasColumnType("int").UseIdentityColumn();
+        
+        builder.Property(x => x.Name).HasColumnName("Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(50);
+        
+    }
+}

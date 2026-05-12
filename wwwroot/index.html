@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FatFood - Delivery de Qualidade</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showSection('home')">FATFOOD</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('home')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('menu')">Cardápio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('orders')">Meus Pedidos</a></li>
+                    <li class="nav-item d-none" id="admin-nav-link"><a class="nav-link text-primary fw-bold" href="#" onclick="showSection('dashboard')">Gerenciador</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link position-relative p-2" href="#" onclick="openCart(); return false;">
+                            <i class="fas fa-shopping-bag fs-5"></i>
+                            <span id="cart-badge" class="cart-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-3" id="login-nav">
+                        <button class="btn btn-primary btn-sm px-4 rounded-pill" onclick="showSection('login')">Entrar</button>
+                    </li>
+                    <li class="nav-item ms-lg-3 d-none" id="logout-nav">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle"></i> Minha Conta
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li><a class="dropdown-item" href="#" onclick="logout()">Sair</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="app-content">
+        <!-- O conteúdo será carregado dinamicamente aqui -->
+    </div>
+
+    <div id="modals-container">
+        <!-- Modais serão carregados aqui -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

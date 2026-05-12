@@ -1,0 +1,59 @@
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="fw-bold m-0">Acesse sua conta</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">E-MAIL</label>
+                        <input type="email" class="form-control" id="login-email" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">SENHA</label>
+                        <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Entrar agora</button>
+                    <p class="text-center small text-muted">Não tem conta? <a href="#" class="text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#registerModal">Cadastre-se</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="fw-bold m-0">Criar sua conta</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">NOME COMPLETO</label>
+                        <input type="text" class="form-control" id="register-name" placeholder="Seu Nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">E-MAIL</label>
+                        <input type="email" class="form-control" id="register-email" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">SENHA</label>
+                        <input type="password" class="form-control" id="register-password" placeholder="••••••••" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">CONFIRMAR SENHA</label>
+                        <input type="password" class="form-control" id="register-confirm-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Criar conta</button>
+                    <p class="text-center small text-muted">Já tem conta? <a href="#" class="text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">Fazer Login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

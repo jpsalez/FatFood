@@ -1,0 +1,85 @@
+<section class="auth-page min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="auth-container animate-up">
+        <div class="card border-0 shadow-2xl rounded-5 overflow-hidden">
+            <div class="row g-0">
+                <!-- Coluna com Imagem/Branding -->
+                <div class="col-lg-5 d-none d-lg-block auth-sidebar p-5 text-white d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="fw-900 mb-3">Bem-vindo de volta!</h2>
+                        <p class="opacity-75">Sentiu saudade do melhor sabor da cidade? Entre e peça agora.</p>
+                    </div>
+                    <div class="brand-footer">
+                        <span class="fw-bold">FATFOOD</span>
+                    </div>
+                </div>
+                <!-- Coluna do Formulário -->
+                <div class="col-lg-7 p-5 bg-white">
+                    <div class="mb-5">
+                        <h3 class="fw-bold mb-1">Acesse sua conta</h3>
+                        <p class="text-muted small">Insira seus dados para continuar</p>
+                    </div>
+
+                    <form id="login-form">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control border-0 bg-light" id="login-email" placeholder="nome@exemplo.com" required>
+                            <label for="login-email" class="text-muted small fw-bold">E-MAIL</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control border-0 bg-light" id="login-password" placeholder="Senha" required>
+                            <label for="login-password" class="text-muted small fw-bold">SENHA</label>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember">
+                                <label class="form-check-label small text-muted" for="remember">Lembrar de mim</label>
+                            </div>
+                            <a href="#" class="small text-primary fw-bold text-decoration-none">Esqueceu a senha?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-lg mb-4">
+                            Entrar agora <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+
+                        <p class="text-center small text-muted">
+                            Ainda não tem uma conta? 
+                            <a href="#" class="text-primary fw-bold text-decoration-none" onclick="showSection('register')">Crie agora</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .auth-page {
+        background: radial-gradient(circle at 10% 20%, rgba(214, 48, 49, 0.05) 0%, rgba(255,255,255,1) 90.2%);
+    }
+    .auth-container {
+        width: 100%;
+        max-width: 900px;
+        padding: 20px;
+    }
+    .auth-sidebar {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .auth-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&auto=format');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+        mix-blend-mode: overlay;
+    }
+    .fw-900 { font-weight: 900; }
+    .form-control:focus {
+        box-shadow: none;
+        background-color: #f8f9fa !important;
+        border-bottom: 2px solid var(--primary) !important;
+    }
+</style>

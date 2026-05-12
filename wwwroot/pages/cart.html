@@ -1,0 +1,23 @@
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content h-100 rounded-0">
+            <div class="modal-header">
+                <h4 class="fw-bold m-0">Seu Carrinho</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items-container">
+                    <!-- Itens -->
+                </div>
+                <div class="mt-4 pt-4 border-top">
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Total do Pedido:</span>
+                        <span id="cart-total" class="price fs-4">R$ 0,00</span>
+                    </div>
+                    <button class="btn btn-primary w-100 py-3" onclick="checkout()">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

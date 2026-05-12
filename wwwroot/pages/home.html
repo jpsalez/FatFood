@@ -1,0 +1,43 @@
+<section id="home-section" class="hero overflow-hidden">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6 animate-up">
+                <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill mb-3 fw-bold">NOVIDADE</span>
+                <h1 class="display-3 fw-800 mb-3">Sabor que <br><span style="color:var(--primary)">vicia de verdade.</span></h1>
+                <p class="text-muted fs-5 mb-5 pe-lg-5">Mais que um lanche, uma experiência. Ingredientes premium, carnes selecionadas e o molho secreto que você só encontra aqui.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <button class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-lg" onclick="showSection('menu')">Explorar Cardápio</button>
+                    <button id="admin-home-btn" class="btn btn-outline-dark btn-lg px-5 py-3 rounded-pill d-none" onclick="showSection('dashboard')">
+                        <i class="fas fa-lock me-2"></i>Painel de Controle
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block animate-zoom" style="animation-delay: 0.2s;">
+                <div class="position-relative">
+                    <div class="blob-shape"></div>
+                    <img src="https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=1000&auto=format" class="img-fluid rounded-5 shadow-2xl position-relative z-index-2 rotate-2" alt="Premium Burger">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .fw-800 { font-weight: 800; }
+    .bg-soft-primary { background-color: rgba(214, 48, 49, 0.1); }
+    .min-vh-75 { min-height: 75vh; }
+    .rotate-2 { transform: rotate(2deg); transition: var(--transition); }
+    .rotate-2:hover { transform: rotate(0deg) scale(1.02); }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .z-index-2 { z-index: 2; }
+    .blob-shape {
+        position: absolute;
+        top: -10%;
+        right: -10%;
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(circle, rgba(214, 48, 49, 0.1) 0%, rgba(255,255,255,0) 70%);
+        z-index: 1;
+        border-radius: 50%;
+    }
+</style>

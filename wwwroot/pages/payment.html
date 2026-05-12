@@ -1,0 +1,46 @@
+<section id="payment-section" class="container py-5 text-center">
+    <div class="max-width-600 mx-auto">
+        <div class="mb-5">
+            <i class="fas fa-credit-card fa-4x text-primary mb-3"></i>
+            <h2 class="fw-bold">Finalizar Pagamento</h2>
+            <p class="text-muted">Seu pedido foi registrado. Agora, escolha a forma de pagamento abaixo.</p>
+        </div>
+
+        <div class="card border-0 shadow-sm p-4 mb-4">
+            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                <span class="fw-bold">Pedido #<span id="payment-order-id">---</span></span>
+                <span class="price fs-4" id="payment-total">R$ 0,00</span>
+            </div>
+
+            <div class="payment-options text-start">
+                <label class="payment-option d-flex align-items-center p-3 mb-3 border rounded-3 cursor-pointer">
+                    <input type="radio" name="paymentMethod" value="pix" checked class="me-3">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <i class="fab fa-pix fs-4 text-info me-3"></i>
+                        <div>
+                            <div class="fw-bold">PIX</div>
+                            <small class="text-muted">Aprovação imediata</small>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="payment-option d-flex align-items-center p-3 mb-3 border rounded-3 cursor-pointer">
+                    <input type="radio" name="paymentMethod" value="cartao" class="me-3">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <i class="fas fa-credit-card fs-4 text-primary me-3"></i>
+                        <div>
+                            <div class="fw-bold">Cartão de Crédito</div>
+                            <small class="text-muted">Em até 3x sem juros</small>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <button class="btn btn-primary w-100 py-3 mt-4" onclick="confirmPayment()">
+                Pagar Agora
+            </button>
+        </div>
+        
+        <button class="btn btn-link text-muted" onclick="showSection('orders')">Pagar depois</button>
+    </div>
+</section>
