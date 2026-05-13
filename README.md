@@ -62,4 +62,4 @@ Ao iniciar pela primeira vez o sistema cria automaticamente:
 
 Use o token retornado no login como `Bearer <token>` no header `Authorization`.
 
-#AINDA FLATA ADICIONAR FUNCIONALIDADES NO DASHBOARD MAS OQ FOI PEDIDO NA SPRINT ESTÁ FEITO
+## AINDA FLATA ADICIONAR FUNCIONALIDADES NO DASHBOARD MAS OQ FOI PEDIDO NA SPRINT ESTÁ FEITO
