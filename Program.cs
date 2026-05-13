@@ -5,6 +5,7 @@ using Lanchonete.Interfaces;
 using Lanchonete.Repository;
 using Lanchonete.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -17,7 +18,8 @@ builder.Services.AddAuthorization();
 
 ConfigureSwagger(builder);
 
-builder.Services.AddDbContext<DataContext>();
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -63,7 +65,6 @@ app.UseStaticFiles(new StaticFileOptions
 app.MapControllers();
 
 app.Run();
-
 
 void ConfigureAuthentication(WebApplicationBuilder builder)
 {
@@ -122,3 +123,5 @@ void ConfigureSwagger(WebApplicationBuilder builder){
         });
     });
 }
+
+public partial class Program { }

@@ -24,6 +24,14 @@ public class OrderRepository : IOrderRepository
     }
     
 
+    public async Task<List<Order>> GetByUserIdAsync(int userId)
+    {
+        return await _context.Orders
+            .Include(x => x.Items).ThenInclude(x => x.Product)
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
+    }
+
     public async Task<Order?> GetByIdAsync(int id)
     {
         return await _context.Orders.Include(x => x.Items).ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id == id);

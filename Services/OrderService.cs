@@ -50,11 +50,8 @@ public class OrderService : IOrderService
 
     public async Task<List<OrderResponseDTO>> GetOrdersByUserId(int userId)
     {
-        var resultQuery = await _repository.GetAllAsync();
-        return resultQuery
-            .Where(o => o.UserId == userId)
-            .Select(MapToResponse)
-            .ToList();
+        var resultQuery = await _repository.GetByUserIdAsync(userId);
+        return resultQuery.Select(MapToResponse).ToList();
     }
 
     public async Task<OrderResponseDTO> GetOrderById(int orderId)
@@ -146,6 +143,9 @@ public async Task<OrderResponseDTO> CreateOrder(OrderRequestDTO orderRequest)
     {
         var order = await _repository.GetByIdAsync(orderId);
         if (order == null) return null;
+
+        if (order.Status != OrderStatus.PENDING)
+            throw new Exception("Apenas pedidos com status PENDING podem ser finalizados no checkout.");
 
         foreach (var item in order.Items)
         {

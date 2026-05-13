@@ -8,9 +8,13 @@ namespace Lanchonete.Data;
 
 public class DataContext : DbContext
 {
+    public DataContext() { }
+
+    public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(
-            "server=localhost,15433;User Id=SA;PASSWORD=Senha123!;Initial Catalog=FatFoodTest;Encrypt=True;TrustServerCertificate=True;");
+    {
+    }
 
 
     public DbSet<User> Users { get; set; }
