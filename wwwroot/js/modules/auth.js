@@ -6,8 +6,14 @@ export function initAuth() {
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
 
-    if (loginForm) loginForm.addEventListener('submit', handleLogin);
-    if (registerForm) registerForm.addEventListener('submit', handleRegister);
+    if (loginForm) {
+        loginForm.removeEventListener('submit', handleLogin);
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    if (registerForm) {
+        registerForm.removeEventListener('submit', handleRegister);
+        registerForm.addEventListener('submit', handleRegister);
+    }
 
     updateAuthUI();
 }

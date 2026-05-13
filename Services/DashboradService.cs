@@ -58,25 +58,26 @@ public class DashboardService : IDashboardService
 
     private async Task<List<RevenueByDayDTO>> GetRevenueByDay(DateTime today)
     {
-        var result = new List<RevenueByDayDTO>();
-        var ptBR   = new CultureInfo("pt-BR");
+        var startDate = today.AddDays(-6);
+        var ptBR      = new CultureInfo("pt-BR");
 
-        for (var i = 6; i >= 0; i--)
-        {
-            var day = today.AddDays(-i);
+        var revenues = await _context.Orders
+            .Where(o => o.CreatedAt.Date >= startDate && o.CreatedAt.Date <= today
+                        && o.Status != OrderStatus.CANCELED)
+            .GroupBy(o => o.CreatedAt.Date)
+            .Select(g => new { Date = g.Key, Revenue = g.Sum(o => o.TotalPrice) })
+            .ToListAsync();
 
-            var revenue = await _context.Orders
-                .Where(o => o.CreatedAt.Date == day && o.Status != OrderStatus.CANCELED)
-                .SumAsync(o => o.TotalPrice);
+        var revenueDict = revenues.ToDictionary(r => r.Date, r => r.Revenue);
 
-            result.Add(new RevenueByDayDTO
+        return Enumerable.Range(0, 7)
+            .Select(i => today.AddDays(i - 6))
+            .Select(day => new RevenueByDayDTO
             {
                 Day     = day.ToString("ddd", ptBR),
-                Revenue = revenue,
-            });
-        }
-
-        return result;
+                Revenue = revenueDict.GetValueOrDefault(day, 0m),
+            })
+            .ToList();
     }
 
     private async Task<List<RecentOrderDTO>> GetRecentOrders()
@@ -106,19 +107,16 @@ public class DashboardService : IDashboardService
             .Take(5)
             .ToListAsync();
 
-        var result = new List<BestSellerDTO>();
+        var productIds = topSales.Select(s => s.ProductId).ToList();
+        var products   = await _context.Products
+            .Where(p => productIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id);
 
-        foreach (var item in topSales)
+        return topSales.Select(s => new BestSellerDTO
         {
-            var product = await _context.Products.FindAsync(item.ProductId);
-            result.Add(new BestSellerDTO
-            {
-                Name  = product?.Name ?? "Produto removido",
-                Sales = item.Sales,
-            });
-        }
-
-        return result;
+            Name  = products.TryGetValue(s.ProductId, out var p) ? p.Name : "Produto removido",
+            Sales = s.Sales,
+        }).ToList();
     }
 
     private async Task<List<CountStatesDTO>> GetPipeline()
