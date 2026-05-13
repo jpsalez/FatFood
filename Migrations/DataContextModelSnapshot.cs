@@ -45,6 +45,32 @@ namespace Lanchonete.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Color = "#d63031",
+                            Name = "Lanches"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Color = "#e17055",
+                            Name = "Acompanhamentos"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Color = "#0984e3",
+                            Name = "Bebidas"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Color = "#a29bfe",
+                            Name = "Sobremesas"
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.Order", b =>
@@ -75,6 +101,16 @@ namespace Lanchonete.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 5, 12, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "COMPLETED",
+                            TotalPrice = 56.00m,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.OrderItem", b =>
@@ -101,6 +137,29 @@ namespace Lanchonete.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            OrderId = 1,
+                            ProductId = 1,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            OrderId = 1,
+                            ProductId = 2,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            OrderId = 1,
+                            ProductId = 3,
+                            Quantity = 1
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.Product", b =>
@@ -179,6 +238,26 @@ namespace Lanchonete.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductCategories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            ProductId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 2,
+                            ProductId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 3,
+                            ProductId = 3
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.Role", b =>
@@ -243,6 +322,22 @@ namespace Lanchonete.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@fatfood.com",
+                            Name = "Admin",
+                            hashPassword = "10000.Z1FNrs/GY4CFMywt68yWEw==.RuWCjjK60nHUGq3oKFTpjFX6vsHwYx9bNmms/aJDcZM="
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "user@fatfood.com",
+                            Name = "User",
+                            hashPassword = "10000.YVilgQmeQ/LDdg1VcFmQ8Q==.0y8t2NPmn6wBOdpLVF5pAQfwqQesj5uYEwPt0mRPgiI="
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.UserRole", b =>
@@ -268,6 +363,20 @@ namespace Lanchonete.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoleId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            RoleId = 2,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Lanchonete.Models.Order", b =>

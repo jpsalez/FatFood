@@ -29,7 +29,7 @@ dotnet ef database update
 dotnet run
 ```
 
-A API sobe em `https://localhost:5001`. O Swagger fica em `/swagger`.
+A API sobe em `https://localhost:5090`. O Swagger fica em `/swagger` e a pagina web em `/index.html`.
 
 > As migrations e o seed rodam automaticamente na primeira inicialização.
 
@@ -61,3 +61,5 @@ Ao iniciar pela primeira vez o sistema cria automaticamente:
 | POST   | `/order`              | Autenticado  |
 
 Use o token retornado no login como `Bearer <token>` no header `Authorization`.
+
+#AINDA FLATA ADICIONAR FUNCIONALIDADES NO DASHBOARD MAS OQ FOI PEDIDO NA SPRINT ESTÁ FEITO
