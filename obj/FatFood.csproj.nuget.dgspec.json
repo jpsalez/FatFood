@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/jpsales/RiderProjects/FatFood/FatFood/FatFood.csproj": {}
+    "/home/jpsales/RiderProjects/FatFood_Development/FatFood/FatFood.csproj": {}
   },
   "projects": {
-    "/home/jpsales/RiderProjects/FatFood/FatFood/FatFood.csproj": {
+    "/home/jpsales/RiderProjects/FatFood_Development/FatFood/FatFood.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/jpsales/RiderProjects/FatFood/FatFood/FatFood.csproj",
+        "projectUniqueName": "/home/jpsales/RiderProjects/FatFood_Development/FatFood/FatFood.csproj",
         "projectName": "FatFood",
-        "projectPath": "/home/jpsales/RiderProjects/FatFood/FatFood/FatFood.csproj",
+        "projectPath": "/home/jpsales/RiderProjects/FatFood_Development/FatFood/FatFood.csproj",
         "packagesPath": "/home/jpsales/.nuget/packages/",
-        "outputPath": "/home/jpsales/RiderProjects/FatFood/FatFood/obj/",
+        "outputPath": "/home/jpsales/RiderProjects/FatFood_Development/FatFood/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/jpsales/.nuget/NuGet/NuGet.Config"

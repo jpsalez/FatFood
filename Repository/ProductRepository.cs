@@ -5,43 +5,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lanchonete.Repository;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : Repository<Product>, IProductRepository
 {
     private readonly DataContext _context;
 
-    public ProductRepository(DataContext context)
+    public ProductRepository(DataContext context) : base(context)
     {
         _context = context;
     }
 
-    public async Task<List<Product>> GetAllAsync()
+    public async Task<List<Product>> GetAllWithCategoriesAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products
+            .Include(p => p.ProductCategories)
+            .ThenInclude(pc => pc.Category)
+            .ToListAsync();
     }
 
-    public async Task<Product?> GetByIdAsync(int id)
+    public async Task<Product?> GetByIdWithCategoriesAsync(int id)
     {
-        return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Products
+            .Include(p => p.ProductCategories)
+            .ThenInclude(pc => pc.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Product> AddAsync(Product product)
+    public async Task SetProductCategoriesAsync(int productId, List<int> categoryIds)
     {
-        await _context.Products.AddAsync(product);
+        var existing = await _context.ProductCategories
+            .Where(pc => pc.ProductId == productId)
+            .ToListAsync();
+        _context.ProductCategories.RemoveRange(existing);
+
+        foreach (var categoryId in categoryIds)
+            _context.ProductCategories.Add(new ProductCategory { ProductId = productId, CategoryId = categoryId });
+
         await _context.SaveChangesAsync();
-        return product;
-    }
-
-    public async Task<Product> UpdateAsync(Product product)
-    {
-        _context.Products.Update(product);
-        await _context.SaveChangesAsync();
-        return product;
-    }
-
-    public async Task<Product> DeleteAsync(Product product)
-    {
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
-        return product;
     }
 }

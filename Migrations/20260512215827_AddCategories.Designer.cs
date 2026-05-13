@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lanchonete.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260512061430_imgInProduct")]
-    partial class imgInProduct
+    [Migration("20260512215827_AddCategories")]
+    partial class AddCategories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,31 @@ namespace Lanchonete.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Lanchonete.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar")
+                        .HasDefaultValue("#888888");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", (string)null);
+                });
 
             modelBuilder.Entity("Lanchonete.Models.Order", b =>
                 {
@@ -93,9 +118,6 @@ namespace Lanchonete.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Img")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -136,6 +158,30 @@ namespace Lanchonete.Migrations
                             Price = 7.00m,
                             StockQuantity = 500
                         });
+                });
+
+            modelBuilder.Entity("Lanchonete.Models.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ProductId", "CategoryId")
+                        .IsUnique();
+
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("Lanchonete.Models.Role", b =>
@@ -257,6 +303,25 @@ namespace Lanchonete.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Lanchonete.Models.ProductCategory", b =>
+                {
+                    b.HasOne("Lanchonete.Models.Category", "Category")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lanchonete.Models.Product", "Product")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Lanchonete.Models.UserRole", b =>
                 {
                     b.HasOne("Lanchonete.Models.Role", "Role")
@@ -276,6 +341,11 @@ namespace Lanchonete.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Lanchonete.Models.Category", b =>
+                {
+                    b.Navigation("ProductCategories");
+                });
+
             modelBuilder.Entity("Lanchonete.Models.Order", b =>
                 {
                     b.Navigation("Items");
@@ -284,6 +354,8 @@ namespace Lanchonete.Migrations
             modelBuilder.Entity("Lanchonete.Models.Product", b =>
                 {
                     b.Navigation("OrderItems");
+
+                    b.Navigation("ProductCategories");
                 });
 
             modelBuilder.Entity("Lanchonete.Models.User", b =>

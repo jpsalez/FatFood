@@ -1,5 +1,7 @@
 import { initProductManagement, loadProductsAdmin } from './product-management.js';
+import { initCategoryManagement, loadCategoriesAdmin } from './category-management.js';
 import { apiFetch } from './token.js';
+import { STATUS as STATUS_DISPLAY } from './utils.js';
 
 // ── Mock analytics data ────────────────────────────────────────────────
 const REVENUE_DATA = [1850, 2300, 1950, 3100, 2750, 4200, 3720];
@@ -29,14 +31,6 @@ const RECENT_ORDERS = [
     { id: 305, customer: 'Julia Sousa',  status: 'COMPLETED', total: 61.00, time: '13:15' },
 ];
 
-const STATUS_DISPLAY = {
-    PENDING:   { label: 'Aguardando', dot: '#f59e0b', bg: '#fffbeb', color: '#92400e' },
-    PAID:      { label: 'Pago',       dot: '#7c3aed', bg: '#f5f3ff', color: '#5b21b6' },
-    PREPARING: { label: 'Preparando', dot: '#2563eb', bg: '#eff6ff', color: '#1d4ed8' },
-    COMPLETED: { label: 'Concluído',  dot: '#16a34a', bg: '#f0fdf4', color: '#15803d' },
-    CANCELED:  { label: 'Cancelado',  dot: '#dc2626', bg: '#fef2f2', color: '#b91c1c' },
-};
-
 const STATUS_TRANSITIONS = {
     PENDING:   [{ label: 'Confirmar pagamento', val: 1 }, { label: 'Cancelar', val: 4 }],
     PAID:      [{ label: 'Iniciar preparo',     val: 2 }, { label: 'Cancelar', val: 4 }],
@@ -45,7 +39,7 @@ const STATUS_TRANSITIONS = {
     CANCELED:  [],
 };
 
-const TAB_TITLES = { overview: 'Visão Geral', orders: 'Pedidos', products: 'Produtos' };
+const TAB_TITLES = { overview: 'Visão Geral', orders: 'Pedidos', products: 'Produtos', categories: 'Categorias' };
 
 // ── State ──────────────────────────────────────────────────────────────
 let revenueChart    = null;
@@ -78,7 +72,7 @@ function switchTab(name) {
 
     document.querySelectorAll('.adm-nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
 
-    ['overview', 'orders', 'products'].forEach(tab => {
+    ['overview', 'orders', 'products', 'categories'].forEach(tab => {
         const el = document.getElementById(`tab-${tab}`);
         if (el) el.style.display = tab === name ? '' : 'none';
     });
@@ -86,8 +80,9 @@ function switchTab(name) {
     const titleEl = document.getElementById('adm-page-title');
     if (titleEl) titleEl.textContent = TAB_TITLES[name] ?? name;
 
-    if (name === 'products') initProductManagement();
-    if (name === 'orders')   loadAdminOrders();
+    if (name === 'products')   initProductManagement();
+    if (name === 'orders')     loadAdminOrders();
+    if (name === 'categories') initCategoryManagement();
 }
 
 // ── Refresh ────────────────────────────────────────────────────────────
@@ -96,6 +91,8 @@ function dashRefresh() {
         loadProductsAdmin();
     } else if (activeTab === 'orders') {
         loadAdminOrders();
+    } else if (activeTab === 'categories') {
+        loadCategoriesAdmin();
     } else {
         setDate();
         renderPipeline();
@@ -381,3 +378,4 @@ window.toggleSidebar     = toggleSidebar;
 window.loadAdminOrders   = loadAdminOrders;
 window.updateOrderStatus = updateOrderStatus;
 window.setOrderFilter    = setOrderFilter;
+window.loadCategoriesAdmin = loadCategoriesAdmin;

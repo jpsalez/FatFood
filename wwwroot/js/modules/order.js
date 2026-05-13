@@ -1,22 +1,12 @@
 import { getCartItems, clearCart } from './cart.js';
 import { getUserId, isLoggedIn, apiFetch } from './token.js';
+import { escHtml as esc, STATUS, FLOW, FLOW_LABELS, productEmoji as emoji } from './utils.js';
 
 const API_URL    = 'v1/api/orders';
 const MY_API_URL = 'v1/api/orders/my';
 
 let currentOrder = null;
 let ordersCache  = [];
-
-const STATUS = {
-    PENDING:   { label: 'Aguardando', dot: '#f39c12', bg: '#fef5e7', color: '#b7770d' },
-    PAID:      { label: 'Pago',       dot: '#6c5ce7', bg: '#f0eeff', color: '#5a4dd6' },
-    PREPARING: { label: 'Preparando', dot: '#2980b9', bg: '#e8f4fd', color: '#1a6a9a' },
-    COMPLETED: { label: 'Concluído',  dot: '#27ae60', bg: '#e9f7ef', color: '#1e8449' },
-    CANCELED:  { label: 'Cancelado',  dot: '#c0392b', bg: '#fdecea', color: '#a93226' },
-};
-
-const FLOW        = ['PENDING', 'PAID', 'PREPARING', 'COMPLETED'];
-const FLOW_LABELS = { PENDING: 'Aguardando', PAID: 'Pago', PREPARING: 'Preparando', COMPLETED: 'Entregue' };
 
 // ── Create order ───────────────────────────────────────────────────────
 export async function createOrder() {
@@ -248,19 +238,6 @@ function closeOrderDetail() {
 function escKey(e) { if (e.key === 'Escape') closeOrderDetail(); }
 
 // ── Helpers ────────────────────────────────────────────────────────────
-function emoji(name) {
-    const n = (name || '').toLowerCase();
-    if (/hambúrguer|burger|lanche|combo|sanduíche/.test(n)) return '🍔';
-    if (/batata|frita|porção|nugget/.test(n))                return '🍟';
-    if (/refrigerante|coca|guaraná|suco|água|bebida|lata|garrafa/.test(n)) return '🥤';
-    if (/sobremesa|milk|sorvete|doce|brownie|cheesecake/.test(n)) return '🍦';
-    return '🍽️';
-}
-
-function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
 function skeletonHTML() {
     return Array.from({ length: 3 }, (_, i) => `
 <div class="orc-sk" style="opacity:${1 - i * 0.22}">

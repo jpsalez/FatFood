@@ -1,4 +1,4 @@
-@Lanchonete_HostAddress = http://localhost:5000
+@Lanchonete_HostAddress = http://localhost:5090
 
 GET {{Lanchonete_HostAddress}}/weatherforecast/
 Accept: application/json

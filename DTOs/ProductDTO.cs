@@ -15,7 +15,5 @@ public class ProductDTO
     public string Description {get; set;} = string.Empty;
     [Required]
     public decimal Price {get; set;}
-
-    [RegularExpression(@"^https?://[^\s]+$", ErrorMessage = "Deve ser uma URL válida (http/https)")]
-    public string? Img { get; set; }
+    public List<int> CategoryIds { get; set; } = new();
 }

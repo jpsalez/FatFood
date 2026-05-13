@@ -1,25 +1,22 @@
 import { apiFetch } from './token.js';
+import { escHtml, escJs, API_BASE } from './utils.js';
 
-const API = 'v1/api';
-let allProducts = [];
-
-// ── Category helper ────────────────────────────────────────────────────
-function getCategory(product) {
-    const n = product.name.toLowerCase();
-    if (n.includes('hambúrguer') || n.includes('burger') || n.includes('lanche') || n.includes('combo') || n.includes('sanduíche'))
-        return { label: 'Lanche', color: '#d63031', emoji: '🍔' };
-    if (n.includes('batata') || n.includes('frita') || n.includes('porção') || n.includes('nugget'))
-        return { label: 'Acompanhamento', color: '#e17055', emoji: '🍟' };
-    if (n.includes('refrigerante') || n.includes('coca') || n.includes('guaraná') || n.includes('suco') || n.includes('água') || n.includes('bebida') || n.includes('lata') || n.includes('garrafa'))
-        return { label: 'Bebida', color: '#0984e3', emoji: '🥤' };
-    if (n.includes('sobremesa') || n.includes('milk') || n.includes('sorvete') || n.includes('doce') || n.includes('brownie') || n.includes('cheesecake'))
-        return { label: 'Sobremesa', color: '#a29bfe', emoji: '🍦' };
-    return { label: 'Outro', color: '#00b894', emoji: '🍽️' };
-}
+const API = API_BASE;
+let allProducts   = [];
+let allCategories = [];
 
 // ── Entry point ────────────────────────────────────────────────────────
-export function initProductManagement() {
+export async function initProductManagement() {
+    await loadCategories();
     loadProductsAdmin();
+}
+
+async function loadCategories() {
+    try {
+        const res  = await fetch(`${API}/categories`);
+        const data = await res.json();
+        allCategories = data.data || [];
+    } catch { allCategories = []; }
 }
 
 // ── Load all products ──────────────────────────────────────────────────
@@ -46,6 +43,9 @@ export async function loadProductsAdmin() {
 
         if (empty) empty.style.display = 'none';
         renderProductRows(allProducts, body);
+
+        // Rebuild category select in case categories changed
+        buildCategorySelect();
     } catch {
         body.innerHTML = '<div style="padding:20px;color:#d63031;font-size:.85rem">Erro ao carregar produtos.</div>';
     }
@@ -54,22 +54,47 @@ export async function loadProductsAdmin() {
 // ── Render rows ────────────────────────────────────────────────────────
 function renderProductRows(products, container) {
     container.innerHTML = products.map(p => {
-        const cat = getCategory(p);
+        const firstCat = p.categories?.[0];
+        const chipHtml = firstCat
+            ? `<span class="pm-cat-chip" style="color:${firstCat.color};background:${firstCat.color}18">${escHtml(firstCat.name)}</span>`
+            : `<span class="pm-cat-chip" style="color:#aaa;background:#f0f0f0">Sem categoria</span>`;
+
         return `
         <div class="pm-row" id="pm-row-${p.id}">
-            <div class="pm-row-emoji-wrap" style="background:${cat.color}18">${cat.emoji}</div>
+            <div class="pm-row-emoji-wrap" style="background:${firstCat ? firstCat.color + '18' : '#f0f0f0'}">🍽️</div>
             <div class="pm-row-info">
                 <div class="pm-row-name">${escHtml(p.name)}</div>
                 <div class="pm-row-desc">${escHtml(p.description)}</div>
             </div>
-            <span class="pm-cat-chip" style="color:${cat.color};background:${cat.color}18">${cat.label}</span>
+            ${chipHtml}
             <span class="pm-price">R$&nbsp;${Number(p.price).toFixed(2)}</span>
             <div class="pm-row-actions">
                 <button class="pm-btn-edit" onclick="openEditForm(${p.id})">Editar</button>
-                <button class="pm-btn-del" onclick="triggerInlineDelete(${p.id}, '${escAttr(p.name)}')">Remover</button>
+                <button class="pm-btn-del" onclick="triggerInlineDelete(${p.id}, '${escJs(p.name)}')">Remover</button>
             </div>
         </div>`;
     }).join('');
+}
+
+// ── Build category checkboxes in form ──────────────────────────────────
+function buildCategorySelect(selectedIds = []) {
+    const wrap = document.getElementById('pm-categories-wrap');
+    if (!wrap) return;
+    if (allCategories.length === 0) {
+        wrap.innerHTML = '<span style="color:#bbb;font-size:.78rem">Nenhuma categoria cadastrada.</span>';
+        return;
+    }
+    wrap.innerHTML = allCategories.map(c => `
+        <label class="pm-cat-check">
+            <input type="checkbox" name="pm-cat" value="${c.id}" ${selectedIds.includes(c.id) ? 'checked' : ''}>
+            <span class="pm-cat-check-dot" style="background:${c.color}"></span>
+            ${escHtml(c.name)}
+        </label>`).join('');
+}
+
+function getSelectedCategoryIds() {
+    return Array.from(document.querySelectorAll('input[name="pm-cat"]:checked'))
+        .map(el => parseInt(el.value));
 }
 
 // ── Form open / close ──────────────────────────────────────────────────
@@ -81,8 +106,7 @@ export function openProductForm() {
     form.reset();
     document.getElementById('pm-product-id').value = '';
     document.getElementById('pm-submit-btn').textContent = 'Salvar produto';
-    const imgInput = document.getElementById('pm-img');
-    if (imgInput) imgInput.value = '';
+    buildCategorySelect([]);
 
     wrap.classList.add('open');
     wrap.setAttribute('aria-hidden', 'false');
@@ -101,9 +125,8 @@ export function openEditForm(id) {
     document.getElementById('pm-name').value         = product.name;
     document.getElementById('pm-description').value  = product.description;
     document.getElementById('pm-price').value        = Number(product.price).toFixed(2);
-    const imgInput = document.getElementById('pm-img');
-    if (imgInput) imgInput.value = product.img || '';
     document.getElementById('pm-submit-btn').textContent = 'Salvar Alterações';
+    buildCategorySelect((product.categories || []).map(c => c.id));
 
     wrap.classList.add('open');
     wrap.setAttribute('aria-hidden', 'false');
@@ -126,7 +149,7 @@ export async function submitProductForm(e) {
     const name        = document.getElementById('pm-name').value.trim();
     const description = document.getElementById('pm-description').value.trim();
     const price       = parseFloat(document.getElementById('pm-price').value);
-    const img         = document.getElementById('pm-img')?.value.trim() || null;
+    const categoryIds = getSelectedCategoryIds();
     const submitBtn   = document.getElementById('pm-submit-btn');
 
     if (!name || !description || isNaN(price) || price < 0) {
@@ -134,13 +157,7 @@ export async function submitProductForm(e) {
         return;
     }
 
-    const urlRegex = /^https?:\/\/[^\s]+$/;
-    if (img && !urlRegex.test(img)) {
-        window.showToast?.('URL da imagem inválida. Use http:// ou https://', 'error');
-        return;
-    }
-
-    const payload = JSON.stringify({ id: id ? parseInt(id) : 0, name, description, price, img });
+    const payload = JSON.stringify({ id: id ? parseInt(id) : 0, name, description, price, categoryIds });
     const headers = { 'Content-Type': 'application/json' };
 
     submitBtn.textContent = 'Salvando...';
@@ -204,19 +221,6 @@ export async function executeDelete(id) {
         if (!err?.sessionExpired) window.showToast?.('Erro de conexão.', 'error');
         cancelInlineDelete(id);
     }
-}
-
-// ── Helpers ────────────────────────────────────────────────────────────
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function escAttr(str) {
-    return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
 // ── Expose to window (HTML onclick handlers) ───────────────────────────

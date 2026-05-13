@@ -1,3 +1,7 @@
 @import 'globals.css';
 @import 'components/navbar.css';
 @import 'components/product-card.css';
+@import 'pages/menu.css';
+@import 'pages/orders.css';
+@import 'pages/dashboard.css';
+@import 'pages/product-management.css';

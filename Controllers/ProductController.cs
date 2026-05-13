@@ -1,10 +1,6 @@
-using Lanchonete.Data;
 using Lanchonete.DTOs;
 using Lanchonete.Extensions;
 using Lanchonete.Interfaces;
-using Lanchonete.Models;
-using Lanchonete.Repository;
-using Lanchonete.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +18,7 @@ public class ProductController : ControllerBase
         try
         {
             var products = await productService.GetAllProducts();
-            return Ok(new ResultDTO<List<Product>>(products));
+            return Ok(new ResultDTO<List<ProductResponseDTO>>(products));
         }
         catch (DbUpdateException e)
         {
@@ -45,7 +41,7 @@ public class ProductController : ControllerBase
             if(product ==  null)
                 return NotFound(new ResultDTO<string>("Produto não encontrado"));
 
-            return Ok(new ResultDTO<ProductDTO>(product));
+            return Ok(new ResultDTO<ProductResponseDTO>(product));
         }
         catch (DbUpdateException)
         {

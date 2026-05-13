@@ -122,8 +122,6 @@ function showCartAuthPrompt() {
     overlay.className = 'cap-overlay';
     overlay.innerHTML = `
 <div class="cap" role="dialog" aria-modal="true" aria-labelledby="cap-title">
-  <div class="cap__handle"></div>
-
   <div class="cap__icon-wrap" aria-hidden="true">
     <span class="cap__icon">🛍️</span>
   </div>

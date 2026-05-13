@@ -21,7 +21,5 @@ public class ProductMap : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");
 
         builder.Property(x => x.Description).HasColumnType("text");
-
-        builder.Property(x => x.Img).HasColumnType("nvarchar(max)");
     }
 }

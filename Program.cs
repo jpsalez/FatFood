@@ -10,59 +10,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure jwt schemes and validations
-var JwtKey = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+Configuration.JwtKey = builder.Configuration.GetValue<string>("JwtKey") ?? string.Empty;
+ConfigureAuthentication(builder);
 
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.MapInboundClaims = false;
-    x.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidIssuer = "my-lanchonete.com",
-        ValidateAudience = true,
-        ValidAudience = "my-user",
-        IssuerSigningKey = new SymmetricSecurityKey(JwtKey),
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero,
-        RoleClaimType = "role",
-        NameClaimType = "name",
-    };
-});
 builder.Services.AddAuthorization();
 
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+ConfigureSwagger(builder);
 
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped(typeof(Repository<>));
@@ -74,6 +27,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
@@ -94,6 +49,8 @@ app.UseCors("AnyOrigin");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+//configure static files -> configuração do front no wwwroot;
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -104,6 +61,63 @@ app.UseStaticFiles(new StaticFileOptions
 });
 app.MapControllers();
 
-
 app.Run();
-;
+
+
+void ConfigureAuthentication(WebApplicationBuilder builder)
+{
+// Configure jwt schemes and validations
+    var JwtKey = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+
+    builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(x =>
+    {
+        x.MapInboundClaims = false;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidIssuer = "my-lanchonete.com",
+            ValidateAudience = true,
+            ValidAudience = "my-user",
+            IssuerSigningKey = new SymmetricSecurityKey(JwtKey),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            RoleClaimType = "role",
+            NameClaimType = "name",
+        };
+    });    
+}
+
+void ConfigureSwagger(WebApplicationBuilder builder){
+// Add services to the container.
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "JWT Authorization header using the Bearer scheme."
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+}
