@@ -66,3 +66,5 @@ Ao iniciar pela primeira vez o sistema cria automaticamente:
 | GET    | `v1/api/dashboard/overview`             | Admin       |
 
 Use o token retornado no login como `Bearer <token>` no header `Authorization`.
+ ##aviso
+Caso o projeto esteja pedindo para instalar o arquivo base rode -> dotnet restore

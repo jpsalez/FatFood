@@ -87,12 +87,6 @@ public async Task<OrderResponseDTO> CreateOrder(OrderRequestDTO orderRequest)
         Items = orderItems
     };
 
-    
-    if (_paymentService.ProcessPayment())
-    {
-        order.Status = OrderStatus.PAID;
-    }
-
     var result = await _repository.AddAsync(order);
     return MapToResponse(result);
 }
