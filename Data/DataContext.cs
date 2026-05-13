@@ -8,13 +8,15 @@ namespace Lanchonete.Data;
 
 public class DataContext : DbContext
 {
-    public DataContext() { }
+    private readonly IConfiguration _configuration;
 
-    public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+    public DataContext(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-    }
+    => optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
 
 
     public DbSet<User> Users { get; set; }
