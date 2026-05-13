@@ -51,15 +51,18 @@ Ao iniciar pela primeira vez o sistema cria automaticamente:
 
 ## Endpoints principais
 
-| Método | Rota                  | Acesso       |
-|--------|-----------------------|--------------|
-| POST   | `/auth/login`         | Público      |
-| POST   | `/auth/register`      | Público      |
-| GET    | `/product`            | Autenticado  |
-| POST   | `/product`            | Admin        |
-| GET    | `/order`              | Autenticado  |
-| POST   | `/order`              | Autenticado  |
+| Método | Rota                                    | Acesso      |
+|--------|-----------------------------------------|-------------|
+| POST   | `v1/api/auth/login`                     | Público     |
+| POST   | `v1/api/auth/register`                  | Público     |
+| GET    | `v1/api/products`                       | Autenticado |
+| POST   | `v1/api/products`                       | Admin       |
+| GET    | `v1/api/categories`                     | Autenticado |
+| POST   | `v1/api/categories`                     | Admin       |
+| GET    | `v1/api/orders`                         | Admin       |
+| GET    | `v1/api/orders/my`                      | Autenticado |
+| POST   | `v1/api/orders`                         | Autenticado |
+| PUT    | `v1/api/orders/{id}/status`             | Admin       |
+| GET    | `v1/api/dashboard/overview`             | Admin       |
 
 Use o token retornado no login como `Bearer <token>` no header `Authorization`.
-
-## AINDA FLATA ADICIONAR FUNCIONALIDADES NO DASHBOARD MAS OQ FOI PEDIDO NA SPRINT ESTÁ FEITO

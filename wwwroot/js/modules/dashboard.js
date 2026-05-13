@@ -3,33 +3,13 @@ import { initCategoryManagement, loadCategoriesAdmin } from './category-manageme
 import { apiFetch } from './token.js';
 import { STATUS as STATUS_DISPLAY } from './utils.js';
 
-// ── Mock analytics data ────────────────────────────────────────────────
-const REVENUE_DATA = [1850, 2300, 1950, 3100, 2750, 4200, 3720];
-const REVENUE_DAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-
-const PIPELINE = [
-    { key: 'PREPARING', label: 'Preparando', count: 12, total: 47, indClass: 'p-ind-preparing', color: '#2563eb' },
-    { key: 'PENDING',   label: 'Aguardando', count: 5,  total: 47, indClass: 'p-ind-pending',   color: '#f59e0b' },
-    { key: 'PAID',      label: 'Pago',       count: 9,  total: 47, indClass: 'p-ind-paid',      color: '#7c3aed' },
-    { key: 'COMPLETED', label: 'Concluído',  count: 18, total: 47, indClass: 'p-ind-completed', color: '#16a34a' },
-    { key: 'CANCELED',  label: 'Cancelado',  count: 3,  total: 47, indClass: 'p-ind-canceled',  color: '#dc2626' },
-];
-
-const BEST_SELLERS = [
-    { name: 'Hambúrguer Clássico', sales: 87 },
-    { name: 'Batata Frita G',      sales: 64 },
-    { name: 'Combo Especial',      sales: 51 },
-    { name: 'Refrigerante Lata',   sales: 43 },
-    { name: 'Milk Shake',          sales: 29 },
-];
-
-const RECENT_ORDERS = [
-    { id: 301, customer: 'Ana Costa',    status: 'PREPARING', total: 54.90, time: '14:32' },
-    { id: 302, customer: 'Pedro Lima',   status: 'PAID',      total: 38.50, time: '14:18' },
-    { id: 303, customer: 'Carla Mendes', status: 'COMPLETED', total: 72.00, time: '13:55' },
-    { id: 304, customer: 'Roberto Dias', status: 'PENDING',   total: 23.90, time: '13:40' },
-    { id: 305, customer: 'Julia Sousa',  status: 'COMPLETED', total: 61.00, time: '13:15' },
-];
+const STATUS_META = {
+    PREPARING: { label: 'Preparando', indClass: 'p-ind-preparing', color: '#2563eb' },
+    PENDING:   { label: 'Aguardando', indClass: 'p-ind-pending',   color: '#f59e0b' },
+    PAID:      { label: 'Pago',       indClass: 'p-ind-paid',      color: '#7c3aed' },
+    COMPLETED: { label: 'Concluído',  indClass: 'p-ind-completed', color: '#16a34a' },
+    CANCELED:  { label: 'Cancelado',  indClass: 'p-ind-canceled',  color: '#dc2626' },
+};
 
 const STATUS_TRANSITIONS = {
     PENDING:   [{ label: 'Confirmar pagamento', val: 1 }, { label: 'Cancelar', val: 4 }],
@@ -52,11 +32,7 @@ export function initDashboard() {
     activeTab    = 'overview';
     filterStatus = 'ALL';
     setDate();
-    renderPipeline();
-    renderBestSellers();
-    renderRecentOrders();
-    renderRevenueChart();
-    requestAnimationFrame(() => animateProgressBars());
+    loadDashboardOverview();
     initSidebarNav();
 }
 
@@ -95,11 +71,7 @@ function dashRefresh() {
         loadCategoriesAdmin();
     } else {
         setDate();
-        renderPipeline();
-        renderBestSellers();
-        renderRecentOrders();
-        renderRevenueChart();
-        requestAnimationFrame(() => animateProgressBars());
+        loadDashboardOverview();
     }
 }
 
@@ -114,6 +86,45 @@ function toggleSidebar() {
         overlay?.classList.toggle('visible', isOpen);
     } else {
         sidebar.classList.toggle('collapsed');
+    }
+}
+
+// ── Dashboard overview (API) ───────────────────────────────────────────
+async function loadDashboardOverview() {
+    try {
+        const res  = await apiFetch('v1/api/dashboard/overview');
+        const body = await res.json();
+
+        if (!res.ok) {
+            console.warn('Erro ao carregar overview do dashboard:', body.errors);
+            return;
+        }
+
+        const d = body.data;
+
+        // KPIs
+        const fmt = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        const elRevenue   = document.getElementById('kpi-daily-revenue');
+        const elOrders    = document.getElementById('kpi-orders-today');
+        const elAvgTicket = document.getElementById('kpi-avg-ticket');
+
+        if (elRevenue)   elRevenue.textContent   = `R$ ${fmt(d.dailyRevenue)}`;
+        if (elOrders)    elOrders.textContent     = d.dailyOrdersCount;
+        if (elAvgTicket) elAvgTicket.textContent  = `R$ ${fmt(d.averageTicket)}`;
+
+        // Pipeline total tag
+        const totalOrders = d.pipeline.reduce((s, p) => s + p.count, 0);
+        const tagEl = document.getElementById('pipeline-total-tag');
+        if (tagEl) tagEl.textContent = `${totalOrders} total`;
+
+        renderPipeline(d.pipeline);
+        renderBestSellers(d.bestSellers);
+        renderRecentOrders(d.recentOrders);
+        renderRevenueChart(d.revenueByDay);
+        requestAnimationFrame(() => animateProgressBars());
+    } catch (err) {
+        if (!err?.sessionExpired) console.warn('Erro ao carregar dashboard:', err);
     }
 }
 
@@ -235,29 +246,35 @@ function setDate() {
 }
 
 // ── Pipeline ───────────────────────────────────────────────────────────
-function renderPipeline() {
+function renderPipeline(pipelineData) {
     const container = document.getElementById('pipeline-rows');
     if (!container) return;
-    container.innerHTML = PIPELINE.map(p => `
-        <div class="pipeline-row">
-            <div class="pipeline-state">
-                <span class="p-indicator ${p.indClass}"></span>
-                <span class="p-name">${p.label}</span>
-            </div>
-            <div class="p-track">
-                <div class="p-fill" data-w="${Math.round((p.count / p.total) * 100)}" style="background:${p.color}"></div>
-            </div>
-            <span class="p-count">${p.count}</span>
-        </div>
-    `).join('');
+
+    const total = pipelineData.reduce((s, p) => s + p.count, 0) || 1;
+
+    container.innerHTML = pipelineData.map(p => {
+        const meta = STATUS_META[p.state] ?? { label: p.state, indClass: '', color: '#aaa' };
+        return `
+            <div class="pipeline-row">
+                <div class="pipeline-state">
+                    <span class="p-indicator ${meta.indClass}"></span>
+                    <span class="p-name">${meta.label}</span>
+                </div>
+                <div class="p-track">
+                    <div class="p-fill" data-w="${Math.round((p.count / total) * 100)}" style="background:${meta.color}"></div>
+                </div>
+                <span class="p-count">${p.count}</span>
+            </div>`;
+    }).join('');
 }
 
 // ── Best sellers ───────────────────────────────────────────────────────
-function renderBestSellers() {
+function renderBestSellers(sellers) {
     const container = document.getElementById('dash-best-sellers');
-    if (!container) return;
-    const max = BEST_SELLERS[0].sales;
-    container.innerHTML = BEST_SELLERS.map((item, i) => `
+    if (!container || !sellers.length) return;
+
+    const max = sellers[0].sales || 1;
+    container.innerHTML = sellers.map((item, i) => `
         <div class="seller-row">
             <span class="seller-rank${i === 0 ? ' top' : ''}">${i + 1}</span>
             <div class="seller-info">
@@ -272,10 +289,16 @@ function renderBestSellers() {
 }
 
 // ── Recent orders ──────────────────────────────────────────────────────
-function renderRecentOrders() {
+function renderRecentOrders(orders) {
     const container = document.getElementById('dash-recent-orders');
     if (!container) return;
-    container.innerHTML = RECENT_ORDERS.map(o => {
+
+    if (!orders.length) {
+        container.innerHTML = '<p style="color:#999;font-size:13px;padding:8px 0">Nenhum pedido recente.</p>';
+        return;
+    }
+
+    container.innerHTML = orders.map(o => {
         const s = STATUS_DISPLAY[o.status] ?? { label: o.status, dot: '#aaa', bg: '#f5f5f5', color: '#888' };
         return `
             <div class="order-row">
@@ -297,12 +320,15 @@ function renderRecentOrders() {
 }
 
 // ── Revenue chart ──────────────────────────────────────────────────────
-function renderRevenueChart() {
+function renderRevenueChart(revenueByDay) {
     if (!window.Chart) return;
     const canvas = document.getElementById('revenueChart');
     if (!canvas) return;
 
     if (revenueChart) { revenueChart.destroy(); revenueChart = null; }
+
+    const labels = revenueByDay.map(d => d.day);
+    const values = revenueByDay.map(d => d.revenue);
 
     const ctx  = canvas.getContext('2d');
     const grad = ctx.createLinearGradient(0, 0, 0, 190);
@@ -312,9 +338,9 @@ function renderRevenueChart() {
     revenueChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: REVENUE_DAYS,
+            labels,
             datasets: [{
-                data: REVENUE_DATA,
+                data: values,
                 borderColor: '#C0392B',
                 backgroundColor: grad,
                 borderWidth: 2,
