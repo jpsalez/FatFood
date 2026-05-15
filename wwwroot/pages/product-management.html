@@ -13,35 +13,49 @@
             </div>
         </div>
 
-        <!-- Form Panel (hidden by default) -->
-        <div id="pm-form-panel" class="pm-panel d-none animate-up">
-            <div class="pm-panel-head">
-                <h5 class="pm-panel-title" id="pm-form-title">Novo Produto</h5>
-                <button class="pm-close-btn" onclick="closeProductForm()" title="Fechar">✕</button>
+        <!-- Form Panel Wrapper (matches Dashboard logic) -->
+        <div id="pm-form-wrap" class="pm-form-wrap" aria-hidden="true">
+            <div id="pm-form-panel" class="pm-panel animate-up">
+                <div class="pm-panel-head">
+                    <h5 class="pm-panel-title" id="pm-form-title">Novo Produto</h5>
+                    <button class="pm-close-btn" onclick="closeProductForm()" title="Fechar">✕</button>
+                </div>
+                <form id="pm-form" onsubmit="submitProductForm(event)">
+                    <input type="hidden" id="pm-product-id" value="">
+
+                    <div class="pm-field">
+                        <label class="pm-label" for="pm-name">Nome do Produto</label>
+                        <input type="text" id="pm-name" class="pm-input" placeholder="Ex.: Hambúrguer Duplo" required maxlength="100">
+                    </div>
+
+                    <div class="pm-field">
+                        <label class="pm-label" for="pm-description">Descrição</label>
+                        <textarea id="pm-description" class="pm-input pm-textarea" placeholder="Ingredientes, detalhes..." required maxlength="100" rows="2"></textarea>
+                    </div>
+
+                    <div class="pm-field">
+                        <label class="pm-label" for="pm-price">Preço (R$)</label>
+                        <input type="number" id="pm-price" class="pm-input" placeholder="0,00" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="pm-field">
+                        <label class="pm-label" for="pm-quantity">Quantidade em Estoque</label>
+                        <input type="number" id="pm-quantity" class="pm-input" placeholder="0" min="0" required>
+                    </div>
+
+                    <div class="pm-field">
+                        <label class="pm-label">Categorias</label>
+                        <div id="pm-categories-wrap" class="d-flex flex-wrap gap-2">
+                            <!-- Categorias dinâmicas -->
+                        </div>
+                    </div>
+
+                    <div class="pm-form-actions">
+                        <button type="button" class="pm-btn-ghost" onclick="closeProductForm()">Cancelar</button>
+                        <button type="submit" class="pm-btn-primary" id="pm-submit-btn">Salvar Produto</button>
+                    </div>
+                </form>
             </div>
-            <form id="pm-form" onsubmit="submitProductForm(event)">
-                <input type="hidden" id="pm-product-id" value="">
-
-                <div class="pm-field">
-                    <label class="pm-label" for="pm-name">Nome do Produto</label>
-                    <input type="text" id="pm-name" class="pm-input" placeholder="Ex.: Hambúrguer Duplo" required maxlength="100">
-                </div>
-
-                <div class="pm-field">
-                    <label class="pm-label" for="pm-description">Descrição</label>
-                    <textarea id="pm-description" class="pm-input pm-textarea" placeholder="Ingredientes, detalhes..." required maxlength="100" rows="2"></textarea>
-                </div>
-
-                <div class="pm-field">
-                    <label class="pm-label" for="pm-price">Preço (R$)</label>
-                    <input type="number" id="pm-price" class="pm-input" placeholder="0,00" step="0.01" min="0" required>
-                </div>
-
-                <div class="pm-form-actions">
-                    <button type="button" class="pm-btn-ghost" onclick="closeProductForm()">Cancelar</button>
-                    <button type="submit" class="pm-btn-primary" id="pm-submit-btn">Salvar Produto</button>
-                </div>
-            </form>
         </div>
 
         <!-- Products Table -->

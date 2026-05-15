@@ -33,6 +33,13 @@
 .pm-btn-danger:hover { filter:brightness(.88); }
 
 /* ── Form Panel ─────────────────────────────────── */
+.pm-form-wrap {
+    overflow: hidden; max-height: 0;
+    transition: max-height .4s cubic-bezier(.16,1,.3,1), opacity .28s ease;
+    opacity: 0; margin-bottom: 0;
+}
+.pm-form-wrap.open { max-height: 800px; opacity: 1; margin-bottom: 24px; }
+
 .pm-panel {
     background:#fff;
     border-radius:14px;

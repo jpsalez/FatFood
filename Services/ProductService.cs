@@ -28,7 +28,8 @@ public class ProductService : IProductService
         {
             Name        = model.Name,
             Description = model.Description,
-            Price       = model.Price
+            Price       = model.Price,
+            StockQuantity = model.StockQuantity
         };
 
         await _repository.AddAsync(product);
@@ -47,6 +48,7 @@ public class ProductService : IProductService
         product.Name        = model.Name;
         product.Description = model.Description;
         product.Price       = model.Price;
+        product.StockQuantity = model.StockQuantity;
 
         await _repository.UpdateAsync(product);
         await _repository.SetProductCategoriesAsync(id, model.CategoryIds);

@@ -105,6 +105,8 @@ export function openProductForm() {
 
     form.reset();
     document.getElementById('pm-product-id').value = '';
+    const q = document.getElementById('pm-quantity');
+    if (q) q.value = '0';
     document.getElementById('pm-submit-btn').textContent = 'Salvar produto';
     buildCategorySelect([]);
 
@@ -125,6 +127,8 @@ export function openEditForm(id) {
     document.getElementById('pm-name').value         = product.name;
     document.getElementById('pm-description').value  = product.description;
     document.getElementById('pm-price').value        = Number(product.price).toFixed(2);
+    const q = document.getElementById('pm-quantity');
+    if (q) q.value = product.stockQuantity || 0;
     document.getElementById('pm-submit-btn').textContent = 'Salvar Alterações';
     buildCategorySelect((product.categories || []).map(c => c.id));
 
@@ -149,6 +153,7 @@ export async function submitProductForm(e) {
     const name        = document.getElementById('pm-name').value.trim();
     const description = document.getElementById('pm-description').value.trim();
     const price       = parseFloat(document.getElementById('pm-price').value);
+    const stockQuantity = parseInt(document.getElementById('pm-quantity')?.value || '0');
     const categoryIds = getSelectedCategoryIds();
     const submitBtn   = document.getElementById('pm-submit-btn');
 
@@ -157,7 +162,7 @@ export async function submitProductForm(e) {
         return;
     }
 
-    const payload = JSON.stringify({ id: id ? parseInt(id) : 0, name, description, price, categoryIds });
+    const payload = JSON.stringify({ id: id ? parseInt(id) : 0, name, description, price, stockQuantity, categoryIds });
     const headers = { 'Content-Type': 'application/json' };
 
     submitBtn.textContent = 'Salvando...';

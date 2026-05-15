@@ -13,6 +13,10 @@ public class ProductDTO
     [Required]
     [MaxLength(100)]
     public string Description {get; set;} = string.Empty;
+    
+    [Required]
+    public int StockQuantity {get; set;}
+    
     [Required]
     public decimal Price {get; set;}
     public List<int> CategoryIds { get; set; } = new();
